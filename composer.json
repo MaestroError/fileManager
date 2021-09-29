@@ -1,0 +1,21 @@
+{
+    "name": "maestroerror/file-manager",
+    "description": "Easy to use, chainable PHP fileManager class with all main features",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "maestroerror",
+            "email": "revaz.gh@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "maestroerror\\": "src/"
+        }
+    }
+}

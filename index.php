@@ -2,7 +2,7 @@
 require "src/fileManager.php";
 date_default_timezone_set("Asia/Tbilisi");
 
-$test = new Pinguinus\fileManager();
+$test = new maestroerror\fileManager();
 
 $array = [
     "action" => "rename",

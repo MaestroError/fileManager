@@ -1,6 +1,6 @@
 <?php 
 
-namespace Pinguinus;
+namespace maestroerror;
 
 class fileManager {
     public $currentDirectory;
