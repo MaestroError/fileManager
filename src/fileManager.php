@@ -95,8 +95,8 @@ class fileManager {
         return $this;
     }
 
-    public function fill($data, $uri) {
-        file_put_contents($uri, $data);
+    public function fill($data, $fileName) {
+        file_put_contents($this::pwd(). DIRECTORY_SEPARATOR . $fileName, $data);
         return $this;
     }
 
