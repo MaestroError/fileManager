@@ -206,7 +206,7 @@ class fileManager {
     }
 
     protected function getUriByPath($path){
-        $uri = str_replace($this -> rootPath, '', $path);
+        $uri = str_replace($this -> rootPath."\\", '', $path);
         $uri = str_replace("\\", '/', $uri);
         return $uri;
     } 
