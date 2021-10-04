@@ -219,4 +219,19 @@ class fileManager {
         }
         rmdir($dir);
     }
+
+    protected function dirTree($root) {
+        $tree = array();
+        foreach(scandir($root) as $file) {
+            if ('.' === $file || '..' === $file) continue;
+            if (is_dir("$root".DIRECTORY_SEPARATOR."$file")) {
+                $tree[$file] = $this->dirTree("$root".DIRECTORY_SEPARATOR."$file");
+            };
+        }
+        return $tree;
+    }
+
+    public function getTree() {
+        return $this->dirTree($this->rootPath);
+    }
 }

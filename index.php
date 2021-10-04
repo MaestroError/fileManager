@@ -32,4 +32,4 @@ $test->root();
 
 echo $test::pwd();
 
-// print_r($test);
+print_r($test->getTree());
