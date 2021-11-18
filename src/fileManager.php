@@ -237,7 +237,7 @@ class fileManager {
             if ('.' === $file || '..' === $file) continue;
             if (is_dir("$root".DIRECTORY_SEPARATOR."$file")) {
                 $branch['name'] = $file;
-                $branch['children'] = $this->dirTree("$root".DIRECTORY_SEPARATOR."$file");
+                $branch['children'] = $this->dirTreeNew("$root".DIRECTORY_SEPARATOR."$file");
                 $tree[] = $branch;
             };
         }
