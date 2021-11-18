@@ -1,0 +1,34 @@
+[
+    {
+        "name": "testfolder",
+        "children": [
+            {
+                "name": "f1",
+                "children": [
+                    {
+                        "name": "S2",
+                        "children": [
+                            {
+                                "name": "S3",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "test1",
+                        "children": [
+                            {
+                                "name": "test2",
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "testout1",
+                "children": []
+            }
+        ]
+    }
+]

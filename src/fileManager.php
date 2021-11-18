@@ -231,7 +231,20 @@ class fileManager {
         return $tree;
     }
 
+    protected function dirTreeNew($root) {
+        $tree = array();
+        foreach(scandir($root) as $file) {
+            if ('.' === $file || '..' === $file) continue;
+            if (is_dir("$root".DIRECTORY_SEPARATOR."$file")) {
+                $branch['name'] = $file;
+                $branch['children'] = $this->dirTree("$root".DIRECTORY_SEPARATOR."$file");
+                $tree[] = $branch;
+            };
+        }
+        return $tree;
+    }
+
     public function getTree() {
-        return $this->dirTree($this->rootPath);
+        return $this->dirTreeNew($this->rootPath);
     }
 }

@@ -32,4 +32,4 @@ $test->root();
 
 echo $test::pwd();
 
-print_r($test->getTree());
+print_r(json_encode($test->getTree()));
