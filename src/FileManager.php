@@ -2,20 +2,56 @@
 
 namespace maestroerror;
 
-class fileManager
+class FileManager
 {
-    // PWD - Current working directory
-    public $currentDirectory;
-    // Root, where fileManager starts scanning
-    protected $root;
-    //
-    public $uri;
+    /**
+     * PWD - Current working directory
+     *
+     * @var string
+     */
+    public string $currentDirectory;
+
+    /**
+     * Root, where fileManager starts scanning
+     *
+     * @var string
+     */
+    protected string $root;
+
+    /**
+     * Inner URI from root folder (to display)
+     *
+     * @var string
+     */
+    public string $uri;
+
+    // ??
     public $filePath;
-    protected $rootPath;
+
+    /**
+     * Root's absolute path
+     *
+     * @var string
+     */
+    protected string $rootPath;
+
+    /**
+     * Array with folder names (key) and locations from root (value)
+     * Used for breadcrumbs
+     *
+     * @var array
+     */
     protected array $path = [
         "files" => "/",
         "games" => "/games/"
     ];
+
+    /**
+     * Data about the current open folder (URI)
+     * File/Folder name => array with info
+     *
+     * @var array
+     */
     protected array $currentData = [
         "files" => [
             "type" => "Directory",
@@ -29,9 +65,20 @@ class fileManager
         ]
     ];
 
-    static $inst;
+    /**
+     * Instance of class to access from static
+     *
+     * @var FileManager
+     */
+    protected static FileManager $inst;
 
-    function __construct($uri = "", $root = "files")
+    /**
+     * Constructor
+     *
+     * @param string $uri
+     * @param string $root
+     */
+    public function __construct(string $uri = "", string $root = "files")
     {
         $this -> root = $root;
         $this -> rootPath = realpath($root);
@@ -49,6 +96,7 @@ class fileManager
 
     public function setUri($uri)
     {
+        // @todo write checkUriFormat method with DIRECTORY_SEPARATOR and use here
         $this -> uri = $uri;
         return $this;
     }
@@ -91,7 +139,7 @@ class fileManager
             $this->add($uriw, true);
             $this->open($uri);
         }
-        return $this->get_data($file);
+        return $this->getData($file);
     }
 
     public static function pwd()
@@ -122,7 +170,7 @@ class fileManager
         return $this;
     }
 
-    public function get_data($data, $uri)
+    public function getData($data, $uri)
     {
         return file_get_contents($uri);
     }
@@ -147,20 +195,24 @@ class fileManager
             unlink($file);
         }
         if (is_dir($file)) {
-            $this->rmdir_recursive($file);
+            $this->rmdirRecursive($file);
         }
         $this -> setCurrentData();
     }
 
     public function rename($oldName, $newname)
     {
-        $rename = rename($this->currentData[$oldName]['realPath'], $this->currentDirectory . DIRECTORY_SEPARATOR . $newname);
+        $rename = rename(
+            $this->currentData[$oldName]['realPath'],
+            $this->currentDirectory . DIRECTORY_SEPARATOR . $newname
+        );
         $this->setCurrentData();
         return $rename;
     }
 
     protected function setCurrentDirectory()
     {
+        // @todo test this method with non-project-root level dirs and dirs in other locations 
         $uri = str_replace("/", DIRECTORY_SEPARATOR, $this -> uri);
         $this -> currentDirectory = getcwd() . DIRECTORY_SEPARATOR . $this -> root . DIRECTORY_SEPARATOR . $uri;
         // echo $this -> currentDirectory;
@@ -240,14 +292,14 @@ class fileManager
         return $uri;
     }
 
-    protected function rmdir_recursive($dir)
+    protected function rmdirRecursive($dir)
     {
         foreach (scandir($dir) as $file) {
             if ('.' === $file || '..' === $file) {
                 continue;
             }
             if (is_dir("$dir" . DIRECTORY_SEPARATOR . "$file")) {
-                $this->rmdir_recursive("$dir" . DIRECTORY_SEPARATOR . "$file");
+                $this->rmdirRecursive("$dir" . DIRECTORY_SEPARATOR . "$file");
             } else {
                 unlink("$dir" . DIRECTORY_SEPARATOR . "$file");
             }
