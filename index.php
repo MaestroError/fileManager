@@ -2,7 +2,7 @@
 require "src/fileManager.php";
 date_default_timezone_set("Asia/Tbilisi");
 
-$test = new maestroerror\fileManager();
+$test = new maestroerror\fileManager("", "files");
 
 $array = [
     "action" => "rename",
@@ -30,6 +30,6 @@ $test->remove("f2");
 // equals $test->open("");
 $test->root();
 
-echo $test::pwd();
+echo $test::pwd() . "\n";
 
-print_r(json_encode($test->getTree()));
+print_r($test->getTree());

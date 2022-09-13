@@ -17,5 +17,8 @@
         "psr-4": {
             "maestroerror\\": "src/"
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*"
     }
 }
