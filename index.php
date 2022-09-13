@@ -1,5 +1,7 @@
-<?php 
+<?php
+
 require "src/fileManager.php";
+
 date_default_timezone_set("Asia/Tbilisi");
 
 $test = new maestroerror\FileManager("", "files");
@@ -33,4 +35,6 @@ $test->root();
 echo $test::pwd() . "\n";
 
 print_r($test->getTree());
-print_r($test);
+print_r($test::ls());
+
+// print_r($test);

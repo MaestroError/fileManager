@@ -1,4 +1,12 @@
 <?php
+/**
+ * Scans folder and gets information about files
+ * Helps to use basic actions on file (CRUD)
+ *
+ * @author    MaestroError <revaz.gh@gmail.com>
+ * @copyright 2021 Revaz Ghambarashvili
+ * @license   https://github.com/MaestroError/fileManager/blob/maestro/LICENSE MIT License
+ */
 
 namespace maestroerror;
 
@@ -80,59 +88,63 @@ class FileManager
      */
     public function __construct(string $uri = "", string $root = "files")
     {
-        $this -> root = $root;
-        $this -> rootPath = realpath($root);
-        $this -> setUri($uri);
-        $this -> setCurrentDirectory();
+        $this->root = $root;
+        $this->rootPath = realpath($root);
+        $this->setUri($uri);
+        $this->setCurrentDirectory();
         self::$inst = $this;
-        // $this -> setCurrentData();
+        // $this->setCurrentData();
     }
 
-    public function setRoot($root)
+
+    public function setRoot(string $root)
     {
-        $this -> root = $root;
+        $this->root = $root;
         return $this;
     }
 
-    public function setUri($uri)
+    public function setUri(string $uri)
     {
         // @todo write checkUriFormat method with DIRECTORY_SEPARATOR and use here
-        $this -> uri = $uri;
+        $this->uri = $uri;
         return $this;
     }
 
     public function getRoot()
     {
-        return $this -> root;
+        return $this->root;
     }
 
     public function open($dir = "")
     {
-        $this -> setUri($dir);
-        $this -> setCurrentDirectory();
+        $this->setUri($dir);
+        $this->setCurrentDirectory();
     }
 
     public function root($dir = "")
     {
-        $this -> open("");
+        $this->open("");
     }
 
-    public function save($file, $uri = false, $data = false)
+    public function save(string $file, bool|string $uri = false, bool|string $data = false)
     {
+        // If uri is set open the folder, create if not exists
         if ($uri) {
             $uriw = str_replace("/", DIRECTORY_SEPARATOR, $uri);
             $this->add($uriw, true);
             $this->open($uri);
         }
+        // If data is set write in file, if not just create it
         if ($data) {
             $this->fill($data, $file);
         } else {
             $this->add($file);
         }
-        $this -> setCurrentDirectory();
+        // Update current directory and data
+        $this->setCurrentDirectory();
     }
 
-    public function read($file, $uri = false)
+    public function read(string $file, string|bool $uri = false)
     {
         if ($uri) {
             $uriw = str_replace("/", DIRECTORY_SEPARATOR, $uri);
@@ -152,32 +164,32 @@ class FileManager
         return self::$inst->getCurrData();
     }
 
-    public function move($file, $newFilePath)
+    public function move(string $file, string $newFilePath)
     {
         $this->rename(realpath($file), realpath($newFilePath));
         return $this;
     }
 
-    public function fill($data, $fileName)
+    public function fill(string $data, string $fileName)
     {
         file_put_contents($this::pwd() . DIRECTORY_SEPARATOR . $fileName, $data);
         return $this;
     }
 
-    public function append($data, $uri)
+    public function append(string $data, string $fileName)
     {
-        file_put_contents($uri, $data, FILE_APPEND);
+        file_put_contents($fileName, $data, FILE_APPEND);
         return $this;
     }
 
-    public function getData($data, $uri)
+    public function getData(string $data, string $fileName)
     {
-        return file_get_contents($uri);
+        return file_get_contents($fileName);
     }
 
-    public function add($fileName, $forceFolder = false)
+    public function add(string $fileName, bool $forceFolder = false)
     {
-        $file = $this -> currentDirectory . DIRECTORY_SEPARATOR . $fileName;
+        $file = $this->currentDirectory . DIRECTORY_SEPARATOR . $fileName;
         if (!file_exists($file)) {
             if (str_contains($fileName, '.') && !$forceFolder) {
                 touch($file);
@@ -185,22 +197,22 @@ class FileManager
                 mkdir($file, 0777, true);
             }
         }
-        $this -> setCurrentData();
+        $this->setCurrentData();
     }
 
-    public function remove($fileName)
+    public function remove(string $fileName)
     {
-        $file = $this -> currentDirectory . DIRECTORY_SEPARATOR . $fileName;
+        $file = $this->currentDirectory . DIRECTORY_SEPARATOR . $fileName;
         if (is_file($file)) {
             unlink($file);
         }
         if (is_dir($file)) {
             $this->rmdirRecursive($file);
         }
-        $this -> setCurrentData();
+        $this->setCurrentData();
     }
 
-    public function rename($oldName, $newname)
+    public function rename(string $oldName, string $newname)
     {
         $rename = rename(
             $this->currentData[$oldName]['realPath'],
@@ -213,9 +225,9 @@ class FileManager
     protected function setCurrentDirectory()
     {
         // @todo test this method with non-project-root level dirs and dirs in other locations 
-        $uri = str_replace("/", DIRECTORY_SEPARATOR, $this -> uri);
-        $this -> currentDirectory = getcwd() . DIRECTORY_SEPARATOR . $this -> root . DIRECTORY_SEPARATOR . $uri;
-        // echo $this -> currentDirectory;
+        $uri = str_replace("/", DIRECTORY_SEPARATOR, $this->uri);
+        $this->currentDirectory = getcwd() . DIRECTORY_SEPARATOR . $this->root . DIRECTORY_SEPARATOR . $uri;
+
         if (!is_dir($this->currentDirectory)) {
             trigger_error("CurrentDirectory is not exists anymore, you were redirected to Root Dir", E_USER_WARNING);
             return $this->open("");
@@ -227,12 +239,12 @@ class FileManager
 
     protected function getCurrentDirectory()
     {
-        return $this -> currentDirectory;
+        return $this->currentDirectory;
     }
 
-    protected function getPath($uri)
+    protected function getPath(string $uri)
     {
-        $steps = explode("/", $this -> uri);
+        $steps = explode("/", $this->uri);
         $crumbs = [];
         $string = "";
         $i = 1;
@@ -249,20 +261,20 @@ class FileManager
 
     protected function setCurrentData()
     {
-        if (!is_dir($this -> currentDirectory)) {
+        if (!is_dir($this->currentDirectory)) {
             throw new \Exception("currentDirectory property is not directory");
         }
-        $this -> currentData = scandir(urldecode($this -> currentDirectory));
+        $this->currentData = scandir(urldecode($this->currentDirectory));
         unset($this->currentData[0]);
         unset($this->currentData[1]);
         $newArray = [];
-        foreach ($this -> currentData as $item) {
+        foreach ($this->currentData as $item) {
             $data = [];
-            $filePath = $this -> currentDirectory . DIRECTORY_SEPARATOR . $item;
+            $filePath = $this->currentDirectory . DIRECTORY_SEPARATOR . $item;
             $lastModified = filemtime($filePath);
             $data['lastModified'] = $lastModified;
             $data['realPath'] = $filePath;
-            $data['uri'] = $this -> getUriByPath($filePath);
+            $data['uri'] = $this->getUriByPath($filePath);
             if (is_dir($filePath)) {
                 $data['type'] = "directory";
                 $data['parent']  = pathinfo($filePath, PATHINFO_DIRNAME);
@@ -276,7 +288,7 @@ class FileManager
             // echo $item . "\n";
             $newArray[$item] = $data;
         }
-        $this -> currentData = $newArray;
+        $this->currentData = $newArray;
         return $this;
     }
 
@@ -285,14 +297,15 @@ class FileManager
         return $this->currentData;
     }
 
-    protected function getUriByPath($path)
+    protected function getUriByPath(string $filePath)
     {
-        $uri = str_replace($this -> rootPath . "\\", '', $path);
+        // @todo test this method and fix
+        $uri = str_replace($this->rootPath . "\\", '', $filePath);
         $uri = str_replace("\\", '/', $uri);
         return $uri;
     }
 
-    protected function rmdirRecursive($dir)
+    protected function rmdirRecursive(string $dir)
     {
         foreach (scandir($dir) as $file) {
             if ('.' === $file || '..' === $file) {
@@ -307,7 +320,7 @@ class FileManager
         rmdir($dir);
     }
 
-    protected function dirTree($root)
+    protected function dirTree(string $root)
     {
         $tree = array();
         foreach (scandir($root) as $file) {
@@ -321,7 +334,7 @@ class FileManager
         return $tree;
     }
 
-    protected function dirTreeNew($root)
+    protected function dirTreeNew(string $root)
     {
         $tree = array();
         foreach (scandir($root) as $file) {
