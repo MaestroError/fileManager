@@ -408,7 +408,7 @@ class FileManager
         $allFiles = [];
         foreach ($this->currentData as $key => $value) {
             if ($value['type'] === 'file') {
-                $allFiles[] = $value['realPath'];
+                $allFiles[] = $this->getRelativePath($value['realPath'], $this->currentDirectory);
             }
         }
         return $allFiles;
@@ -421,19 +421,32 @@ class FileManager
      * @param string $dir The directory to start scanning from.
      * @return array
      */
-    protected function getFilesRecursiveHelper(string $dir): array
+    protected function getFilesRecursiveHelper(string $dir, string $base): array
     {
         $files = [];
         foreach (scandir($dir) as $file) {
             if ('.' === $file || '..' === $file) continue;
             $filePath = $dir . DIRECTORY_SEPARATOR . $file;
             if (is_dir($filePath)) {
-                $files = array_merge($files, $this->getFilesRecursiveHelper($filePath));
+                $files = array_merge($files, $this->getFilesRecursiveHelper($filePath, $base));
             } else {
-                $files[] = $filePath;
+                $files[] = $this->getRelativePath($filePath, $base);
             }
         }
         return $files;
+    }
+
+    /**
+     * Compute the relative path of $path against $base.
+     */
+    protected function getRelativePath(string $path, string $base): string
+    {
+        // Ensure the base path has a trailing directory separator
+        $base = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $relativePath = str_replace($base, '', $path);
+        
+        // Remove leading slash if it exists
+        return ltrim($relativePath, DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -443,7 +456,7 @@ class FileManager
      */
     protected function getAllFilesRecursively(): array
     {
-        return $this->getFilesRecursiveHelper($this->currentDirectory);
+        return $this->getFilesRecursiveHelper($this->currentDirectory, $this->currentDirectory);
     }
 
     /**
