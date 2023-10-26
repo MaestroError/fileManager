@@ -61,6 +61,6 @@ print_r($test::ls());
 print_r($test::files());
 
 // Test filesAll (recursively)
-print_r($test::files());
+print_r($test::filesAll());
 
 // print_r($test);
