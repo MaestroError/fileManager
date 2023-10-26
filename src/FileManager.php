@@ -154,6 +154,31 @@ class FileManager
         return $this->getData($file);
     }
 
+    // Public statics START
+
+    
+    /**
+     * Initializes a new instance of the FileManager class with a specified root directory.
+     * Sets current location at root
+     *  
+     * @param string $root The root directory for the file manager. Default value is "files".
+     * @return FileManager A new instance of the FileManager class with the specified root directory.
+     */
+    public static function init(string $root = "files") {
+        return new self("", $root);
+    }
+
+    /**
+     * Creates a new instance of the FileManager class with the specified root and URI.
+     *
+     * @param string $root The root directory for the file manager. Default value is "files".
+     * @param string $uri The URI of the current directory. Default value is an empty string.
+     * @return FileManager A new instance of the FileManager class with the specified root and URI.
+     */
+    public static function folder(string $root = "files", string $uri = "") {
+        return new self($uri, $root);
+    }
+
     public static function pwd()
     {
         return self::$inst->getCurrentDirectory();
@@ -163,6 +188,24 @@ class FileManager
     {
         return self::$inst->getCurrData();
     }
+
+    public static function files() {
+        return self::$inst->getAllFilesInCurrentDir();
+    }
+
+    public static function filesAll() {
+        return self::$inst->getAllFilesRecursively();
+    }
+
+    public static function back() {
+        return self::$inst->goUpOneDirectory();
+    }
+
+    public static function toRoot() {
+        return self::$inst->open("");
+    }
+
+    // Public statics END
 
     public function move(string $file, string $newFilePath)
     {
@@ -353,5 +396,74 @@ class FileManager
     public function getTree()
     {
         return $this->dirTreeNew($this->rootPath);
+    }
+
+    /**
+     * Get all files in the current directory.
+     *
+     * @return array
+     */
+    protected function getAllFilesInCurrentDir(): array
+    {
+        $allFiles = [];
+        foreach ($this->currentData as $key => $value) {
+            if ($value['type'] === 'file') {
+                $allFiles[] = $value['realPath'];
+            }
+        }
+        return $allFiles;
+    }
+    
+
+    /**
+     * Helper function to get files recursively.
+     *
+     * @param string $dir The directory to start scanning from.
+     * @return array
+     */
+    protected function getFilesRecursiveHelper(string $dir): array
+    {
+        $files = [];
+        foreach (scandir($dir) as $file) {
+            if ('.' === $file || '..' === $file) continue;
+            $filePath = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($filePath)) {
+                $files = array_merge($files, $this->getFilesRecursiveHelper($filePath));
+            } else {
+                $files[] = $filePath;
+            }
+        }
+        return $files;
+    }
+
+    /**
+     * Get all files in the current directory and its child directories.
+     *
+     * @return array
+     */
+    protected function getAllFilesRecursively(): array
+    {
+        return $this->getFilesRecursiveHelper($this->currentDirectory);
+    }
+
+    /**
+     * Go to the parent directory (like "cd ..")
+     */
+    protected function goUpOneDirectory()
+    {
+        if ($this->uri === "" || $this->uri === "/") {
+            // Already at the root, can't go up further.
+            return;
+        }
+
+        // Remove trailing slash if it exists.
+        $this->uri = rtrim($this->uri, '/');
+
+        // Get parent directory path.
+        $parentPath = dirname($this->uri);
+
+        // Update the URI and current directory.
+        $this->setUri($parentPath);
+        $this->setCurrentDirectory();
     }
 }
