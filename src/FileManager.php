@@ -264,6 +264,14 @@ class FileManager
         $this->setCurrentData();
         return $rename;
     }
+    
+    public function getFiles() {
+        return $this->getAllFilesInCurrentDir();
+    }
+
+    public function getFilesAll() {
+        return $this->getAllFilesRecursively();
+    }
 
     protected function setCurrentDirectory()
     {
