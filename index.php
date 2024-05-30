@@ -2,7 +2,7 @@
 
 require "init.php";
 
-use maestroerror\FileManager;
+use Maestroerror\FileManager;
 
 /** 
  * Array of data needed for actions:
@@ -10,6 +10,8 @@ use maestroerror\FileManager;
  *  target => FILE/DIR NAME
  *  value => NEEDED VALUE / NULL
  *  uri => CURRENT URI (from root - empty string for root folder)
+ * 
+ * 
  */
 $action = [
     "action" => "rename",

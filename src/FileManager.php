@@ -8,7 +8,7 @@
  * @license   https://github.com/MaestroError/fileManager/blob/maestro/LICENSE MIT License
  */
 
-namespace maestroerror;
+namespace Maestroerror;
 
 class FileManager
 {

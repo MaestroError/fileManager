@@ -1,24 +1,27 @@
 {
-    "name": "maestroerror/file-manager",
-    "description": "Easy to use, chainable PHP fileManager class with all main features",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "maestroerror",
-            "email": "revaz.gh@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=7.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "maestroerror\\": "src/"
-        }
-    },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "*"
+  "name": "maestroerror/file-manager",
+  "description": "Easy to use, chainable PHP fileManager class with all main features",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "maestroerror",
+      "email": "revaz.gh@gmail.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.4",
+    "symfony/finder": "7.1.x-dev",
+    "symfony/filesystem": "7.1.x-dev",
+    "illuminate/collections": "^12.0@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "Maestroerror\\": "src/"
+    }
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "*"
+  }
 }
