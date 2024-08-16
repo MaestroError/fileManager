@@ -1,6 +1,6 @@
 # fileManager
 
-Easy to use, chainable PHP fileManager class with all main features
+Easy to use, chainable PHP fileManager class with UNIX-like methods
 
 ---
 
@@ -13,17 +13,22 @@ Refactoring plan, structure and features:
   - `$fileManager->open("Test folder");`
 - Main objects: Directory & File
   - Directory:
-    - Location
-    - Files
+    - Name +
+    - Path +
+    - Files +
+    - Directories +
+    - Tree +
+    - Size +
+    - Date +
   - File:
-    - Name
-    - Path
-    - Content
-    - Size
-    - Date
+    - Name +
+    - Path +
+    - Content +
+    - Size +
+    - Date +
 - Entry Class: FileManager
   - Current directory
-  - Folders array (For Safe property access)
+  - Folders array (For Safe property access) as trait for this and Directory class
   - Main actions (API)
 
 ### To Do
